@@ -8,22 +8,38 @@
 import {NetworkInfo} from 'react-native-network-info';
 import React, {Component} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Switch} from 'react-native';
+// import {handleCommand} from '../API/apiRequests';
+import {getGatewayIP} from '../WIFI/setupWIFI';
 
 const themeColor = '#4b0082';
 const themeColor2 = '#ffffff';
 
+const sendCommand = async function(command) {
+  await fetch(`http://${this.state.ip}:8080/getCommand?command=${command}`)
+    .then(res => res.json())
+    .then(res => this.setState({log: JSON.stringify(res)}));
+};
+
 export class MainScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.sendCommand = sendCommand.bind(this);
     this.state = {
       sw1: false,
       sw2: false,
       sw3: false,
       sw4: false,
+      ip: null,
+      log: 'ready',
     };
   }
 
+  componentDidMount() {
+    getGatewayIP().then(ip => this.setState({ip: ip}));
+  }
+
   render() {
+    console.log(this.state.ip);
     return (
       <View style={styles.container}>
         <View style={styles.headerTextBox}>
@@ -36,31 +52,38 @@ export class MainScreen extends React.Component {
           </Text>
         </View>
         <View style={styles.textField}>
-          <Text style={styles.errorText}>This is the text field for logs</Text>
+          <Text style={styles.errorText}>Robot IP: {this.state.ip}</Text>
+          <Text style={styles.errorText}>{this.state.log}</Text>
         </View>
 
         <View style={styles.buttonBox}>
           <TouchableOpacity
             style={styles.touchable}
-            onPress={() => console.log('FORWARD')}
+            onPress={() => {
+              this.sendCommand('forward');
+            }}
             underlayColor={themeColor}>
             <Text style={styles.touchText}>FORWARD</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.touchable}
-            onPress={() => console.log('BACKWARD')}
+            onPress={() => {
+              this.sendCommand('backward');
+            }}
             underlayColor={themeColor}>
             <Text style={styles.touchText}>BACKWARD</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.touchable}
-            onPress={() => console.log('LEFT')}
+            onPress={() => {
+              this.sendCommand('left');
+            }}
             underlayColor={themeColor}>
             <Text style={styles.touchText}>LEFT</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.touchable}
-            onPress={() => console.log('RIGHT')}
+            onPress={() => this.sendCommand('right')}
             underlayColor={themeColor}>
             <Text style={styles.touchText}>RIGHT</Text>
           </TouchableOpacity>
