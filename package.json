@@ -12,7 +12,9 @@
   "dependencies": {
     "react": "16.11.0",
     "react-native": "0.62.1",
-    "react-native-network-info": "^5.2.1"
+    "react-native-network-info": "^5.2.1",
+    "react-native-video": "^4.4.5",
+    "react-native-webview": "^9.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
